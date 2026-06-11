@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const productoRoutes = require('./src/routes/productoRoutes');
+const authRoutes = require('./src/routes/authRoutes');
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Rutas
 app.use('/api/productos', productoRoutes);
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'API E-commerce funcionando ✅' });
@@ -24,3 +26,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
+
