@@ -9,10 +9,14 @@ const registro = async (req, res) => {
     const usuarioExiste = await Usuario.findOne({ email });
     if (usuarioExiste) return res.status(400).json({ message: 'El email ya está registrado' });
 
-    const usuario = new Usuario({ nombre, email, password });
+    const salt = await bcrypt.genSalt(10);
+    const passwordEncriptado = await bcrypt.hash(password, salt);
+
+    const usuario = new Usuario({ nombre, email, password: passwordEncriptado });
     await usuario.save();
     res.status(201).json({ message: 'Usuario registrado ✅' });
   } catch (error) {
+    console.log('ERROR REGISTRO:', error);
     res.status(500).json({ message: 'Error al registrar usuario' });
   }
 };
@@ -35,8 +39,9 @@ const login = async (req, res) => {
 
     res.json({ token, usuario: { id: usuario._id, nombre: usuario.nombre, email: usuario.email, rol: usuario.rol } });
   } catch (error) {
-    res.status(500).json({ message: 'Error al iniciar sesión' });
-  }
+  console.log('ERROR LOGIN:', error);
+  res.status(500).json({ message: 'Error al iniciar sesión' });
+}
 };
 
 module.exports = { registro, login };

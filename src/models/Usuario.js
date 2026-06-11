@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const usuarioSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
@@ -7,12 +6,5 @@ const usuarioSchema = new mongoose.Schema({
   password: { type: String, required: true },
   rol: { type: String, enum: ['usuario', 'admin'], default: 'usuario' }
 }, { timestamps: true });
-
-// Encriptar password antes de guardar
-usuarioSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
 
 module.exports = mongoose.model('Usuario', usuarioSchema);
