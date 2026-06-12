@@ -13,13 +13,12 @@ const facturaRoutes = require('./src/routes/facturaRoutes');
 
 const app = express();
 app.use(express.json());
+app.use(express.static('public'));
 
-// Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Conectado a MongoDB ✅'))
   .catch((err) => console.log('Error de conexión:', err));
 
-// Rutas
 app.use('/api/productos', productoRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/carrito', carritoRoutes);
@@ -29,7 +28,7 @@ app.use('/api/cupones', cuponRoutes);
 app.use('/api/facturas', facturaRoutes);
 
 app.get('/', (req, res) => {
-  res.json({ message: 'API E-commerce funcionando ✅' });
+  res.sendFile(__dirname + '/public/index.html');
 });
 
 const PORT = process.env.PORT || 3000;
