@@ -3,48 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Commerce</title>
+  <title>GOTTI Store</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #f5f5f5; }
-    
+    body { font-family: Arial, sans-serif; background: #111; color: white; }
+
     nav {
-      background: #2c3e50;
+      background: #000;
       padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 2px solid white;
     }
-    nav h1 { color: white; font-size: 24px; }
+    nav h1 { color: white; font-size: 28px; letter-spacing: 4px; font-weight: bold; }
     nav div a {
       color: white;
       text-decoration: none;
       margin-left: 20px;
-      font-size: 16px;
+      font-size: 15px;
+      letter-spacing: 1px;
     }
-    nav div a:hover { color: #3498db; }
+    nav div a:hover { color: #aaa; }
 
     .hero {
-      background: #3498db;
+      background: #000;
       color: white;
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
+      border-bottom: 1px solid #333;
     }
-    .hero h2 { font-size: 36px; margin-bottom: 10px; }
-    .hero p { font-size: 18px; margin-bottom: 20px; }
+    .hero h2 { font-size: 42px; letter-spacing: 6px; margin-bottom: 15px; }
+    .hero p { font-size: 16px; color: #aaa; margin-bottom: 30px; letter-spacing: 2px; }
     .hero button {
       background: white;
-      color: #3498db;
+      color: black;
       border: none;
-      padding: 12px 30px;
+      padding: 14px 40px;
       font-size: 16px;
-      border-radius: 5px;
+      letter-spacing: 2px;
       cursor: pointer;
+      font-weight: bold;
     }
+    .hero button:hover { background: #ddd; }
 
     .productos-section { padding: 40px 30px; }
-    .productos-section h2 { margin-bottom: 20px; font-size: 24px; }
-    
+    .productos-section h2 {
+      margin-bottom: 25px;
+      font-size: 22px;
+      letter-spacing: 3px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+    }
+
     .productos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -52,68 +63,71 @@
     }
 
     .producto-card {
-      background: white;
-      border-radius: 10px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 5px;
       padding: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    .producto-card h3 { margin-bottom: 10px; }
-    .producto-card p { color: #666; margin-bottom: 10px; }
+    .producto-card h3 { margin-bottom: 10px; letter-spacing: 1px; }
+    .producto-card p { color: #aaa; margin-bottom: 10px; font-size: 14px; }
     .producto-card .precio {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      color: #2c3e50;
+      color: white;
       margin-bottom: 15px;
     }
     .producto-card button {
       width: 100%;
-      background: #3498db;
-      color: white;
+      background: white;
+      color: black;
       border: none;
       padding: 10px;
-      border-radius: 5px;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 1px;
       cursor: pointer;
-      font-size: 16px;
     }
-    .producto-card button:hover { background: #2980b9; }
+    .producto-card button:hover { background: #ddd; }
 
     footer {
-      background: #2c3e50;
-      color: white;
+      background: #000;
+      color: #aaa;
       text-align: center;
       padding: 20px;
       margin-top: 40px;
+      border-top: 1px solid #333;
+      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
 
   <nav>
-    <h1>🛒 E-Commerce</h1>
+    <h1>GOTTI</h1>
     <div>
-      <a href="index.html">Inicio</a>
-      <a href="login.html">Login</a>
-      <a href="registro.html">Registro</a>
-      <a href="carrito.html">Carrito 🛒</a>
-      <a href="admin.html">Admin</a>
+      <a href="index.html">INICIO</a>
+      <a href="login.html">LOGIN</a>
+      <a href="registro.html">REGISTRO</a>
+      <a href="carrito.html">CARRITO 🛒</a>
+      <a href="admin.html">ADMIN</a>
     </div>
   </nav>
 
   <div class="hero">
-    <h2>Bienvenido a nuestra tienda</h2>
-    <p>Encontrá los mejores productos al mejor precio</p>
-    <button onclick="window.location.href='registro.html'">Registrarse</button>
+    <h2>BIENVENIDO A GOTTI</h2>
+    <p>ENCONTRÁ LOS MEJORES PRODUCTOS AL MEJOR PRECIO</p>
+    <button onclick="window.location.href='registro.html'">REGISTRARSE</button>
   </div>
 
   <div class="productos-section">
-    <h2>Productos disponibles</h2>
+    <h2>PRODUCTOS DISPONIBLES</h2>
     <div class="productos-grid" id="productos-grid">
-      <p>Cargando productos...</p>
+      <p style="color:#aaa">Cargando productos...</p>
     </div>
   </div>
 
   <footer>
-    <p>© 2026 E-Commerce - Todos los derechos reservados</p>
+    <p>© 2026 GOTTI — TODOS LOS DERECHOS RESERVADOS</p>
   </footer>
 
   <script>
@@ -126,7 +140,7 @@
         const grid = document.getElementById('productos-grid');
 
         if (productos.length === 0) {
-          grid.innerHTML = '<p>No hay productos disponibles.</p>';
+          grid.innerHTML = '<p style="color:#aaa">No hay productos disponibles.</p>';
           return;
         }
 
@@ -135,11 +149,11 @@
             <h3>${p.nombre}</h3>
             <p>${p.descripcion || 'Sin descripción'}</p>
             <div class="precio">$${p.precio}</div>
-            <button onclick="agregarAlCarrito('${p._id}')">Agregar al carrito</button>
+            <button onclick="agregarAlCarrito('${p._id}')">AGREGAR AL CARRITO</button>
           </div>
         `).join('');
       } catch (error) {
-        document.getElementById('productos-grid').innerHTML = '<p>Error al cargar productos.</p>';
+        document.getElementById('productos-grid').innerHTML = '<p style="color:#aaa">Error al cargar productos.</p>';
       }
     }
 
