@@ -122,14 +122,14 @@
               <h3>${item.producto.nombre}</h3>
               <p>Cantidad: ${item.cantidad}</p>
             </div>
-            <div class="precio">$${item.producto.precio * item.cantidad}</div>
+            <div class="precio">₲ ${(item.producto.precio * item.cantidad).toLocaleString()}</div>
             <button onclick="quitarItem('${item.producto._id}')">QUITAR</button>
           </div>
         `).join('');
 
         totalSection.innerHTML = `
           <div class="total">
-            <h3>TOTAL: $${data.total}</h3>
+            <h3>TOTAL: ₲ ${data.total.toLocaleString()}</h3>
             <button onclick="confirmarOrden()">CONFIRMAR ORDEN ✅</button>
           </div>
         `;
@@ -160,10 +160,10 @@
       });
 
       if (res.ok) {
-        alert('¡Orden confirmada exitosamente! ✅');
-        window.location.href = 'index.html';
+        mostrarNotificacion('¡Orden confirmada exitosamente! ✅');
+        setTimeout(() => window.location.href = 'index.html', 2000);
       } else {
-        alert('Error al confirmar la orden');
+        mostrarNotificacion('Error al confirmar la orden ❌');
       }
     }
 

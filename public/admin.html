@@ -107,8 +107,8 @@
         <textarea id="descripcion" placeholder="Descripción del producto"></textarea>
       </div>
       <div class="form-group">
-        <label>PRECIO</label>
-        <input type="number" id="precio" placeholder="0.00">
+        <label>PRECIO EN GUARANÍES (₲)</label>
+        <input type="number" id="precio" placeholder="0">
       </div>
       <div class="form-group">
         <label>CATEGORÍA</label>
@@ -189,7 +189,7 @@
             <div>
               <h3>${p.nombre}</h3>
               <p>${p.descripcion || 'Sin descripción'} — ${p.categoria || 'Sin categoría'}</p>
-              <p class="precio">$${p.precio}</p>
+              <p class="precio">₲ ${p.precio.toLocaleString()}</p>
             </div>
             <button class="btn-eliminar" onclick="eliminarProducto('${p._id}')">ELIMINAR</button>
           </div>

@@ -62,9 +62,24 @@
     .link { text-align: center; margin-top: 20px; color: #aaa; font-size: 13px; }
     .link a { color: white; text-decoration: none; }
     .error { color: #e74c3c; text-align: center; margin-top: 10px; display: none; font-size: 13px; }
+    .notificacion {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1a1a1a;
+      border: 1px solid white;
+      color: white;
+      padding: 15px 25px;
+      letter-spacing: 1px;
+      font-size: 14px;
+      display: none;
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
+
+  <div class="notificacion" id="notificacion"></div>
 
   <div class="container">
     <h2>GOTTI</h2>
@@ -81,7 +96,7 @@
     </div>
 
     <button onclick="login()">INGRESAR</button>
-    <p class="error" id="error">Email o contraseña incorrectos</p>
+    <p class="error" id="error"></p>
 
     <div class="link">
       <p>¿No tenés cuenta? <a href="registro.html">Registrate</a></p>
@@ -91,6 +106,13 @@
 
   <script>
     const API = 'http://localhost:3000';
+
+    function mostrarNotificacion(texto) {
+      const n = document.getElementById('notificacion');
+      n.textContent = texto;
+      n.style.display = 'block';
+      setTimeout(() => { n.style.display = 'none'; }, 2000);
+    }
 
     async function login() {
       const email = document.getElementById('email').value;
@@ -108,15 +130,17 @@
         if (res.ok) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('usuario', JSON.stringify(data.usuario));
-          alert('Bienvenido ' + data.usuario.nombre + '! ✅');
-          window.location.href = 'index.html';
+          mostrarNotificacion('Bienvenido ' + data.usuario.nombre + '! ✅');
+          setTimeout(() => window.location.href = 'index.html', 1500);
         } else {
-          document.getElementById('error').style.display = 'block';
-          document.getElementById('error').textContent = data.message;
+          const error = document.getElementById('error');
+          error.style.display = 'block';
+          error.textContent = data.message;
         }
       } catch (error) {
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('error').textContent = 'Error al conectar con el servidor';
+        const err = document.getElementById('error');
+        err.style.display = 'block';
+        err.textContent = 'Error al conectar con el servidor';
       }
     }
   </script>

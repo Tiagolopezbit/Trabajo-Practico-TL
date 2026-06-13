@@ -8,6 +8,20 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background: #111; color: white; }
 
+    .notificacion {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1a1a1a;
+      border: 1px solid white;
+      color: white;
+      padding: 15px 25px;
+      letter-spacing: 1px;
+      font-size: 14px;
+      display: none;
+      z-index: 999;
+    }
+
     nav {
       background: #000;
       padding: 15px 30px;
@@ -102,6 +116,8 @@
 </head>
 <body>
 
+  <div class="notificacion" id="notificacion"></div>
+
   <nav>
     <h1>GOTTI</h1>
     <div>
@@ -133,6 +149,13 @@
   <script>
     const API = 'http://localhost:3000';
 
+    function mostrarNotificacion(texto) {
+      const n = document.getElementById('notificacion');
+      n.textContent = texto;
+      n.style.display = 'block';
+      setTimeout(() => { n.style.display = 'none'; }, 2000);
+    }
+
     async function cargarProductos() {
       try {
         const res = await fetch(`${API}/api/productos`);
@@ -148,7 +171,7 @@
           <div class="producto-card">
             <h3>${p.nombre}</h3>
             <p>${p.descripcion || 'Sin descripción'}</p>
-            <div class="precio">$${p.precio}</div>
+            <div class="precio">₲ ${p.precio.toLocaleString()}</div>
             <button onclick="agregarAlCarrito('${p._id}')">AGREGAR AL CARRITO</button>
           </div>
         `).join('');
@@ -157,14 +180,31 @@
       }
     }
 
-    function agregarAlCarrito(id) {
+    async function agregarAlCarrito(id) {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('Debes iniciar sesión para agregar productos al carrito');
         window.location.href = 'login.html';
         return;
       }
-      alert('Producto agregado al carrito ✅');
+
+      try {
+        const res = await fetch(`${API}/api/carrito`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': token
+          },
+          body: JSON.stringify({ productoId: id, cantidad: 1 })
+        });
+
+        if (res.ok) {
+          mostrarNotificacion('Producto agregado al carrito ✅');
+        } else {
+          mostrarNotificacion('Error al agregar al carrito ❌');
+        }
+      } catch (error) {
+        mostrarNotificacion('Error al conectar con el servidor ❌');
+      }
     }
 
     cargarProductos();
