@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - GOTTI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #1a1a1a;
+      padding: 40px;
+      border: 1px solid #333;
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: white;
+      font-size: 28px;
+      letter-spacing: 6px;
+    }
+    .subtitulo {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      font-size: 13px;
+    }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 5px; color: #aaa; letter-spacing: 1px; font-size: 13px; }
+    input {
+      width: 100%;
+      padding: 12px;
+      background: #111;
+      border: 1px solid #333;
+      color: white;
+      font-size: 15px;
+    }
+    input:focus { outline: none; border-color: white; }
+    button {
+      width: 100%;
+      background: white;
+      color: black;
+      border: none;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover { background: #ddd; }
+    .link { text-align: center; margin-top: 20px; color: #aaa; font-size: 13px; }
+    .link a { color: white; text-decoration: none; }
+    .mensaje { text-align: center; margin-top: 10px; display: none; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>GOTTI</h2>
+    <p class="subtitulo">CREAR CUENTA</p>
+
+    <div class="form-group">
+      <label>NOMBRE</label>
+      <input type="text" id="nombre" placeholder="Tu nombre completo">
+    </div>
+
+    <div class="form-group">
+      <label>EMAIL</label>
+      <input type="email" id="email" placeholder="tu@email.com">
+    </div>
+
+    <div class="form-group">
+      <label>CONTRASEÑA</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+
+    <button onclick="registro()">CREAR CUENTA</button>
+    <p class="mensaje" id="mensaje"></p>
+
+    <div class="link">
+      <p>¿Ya tenés cuenta? <a href="login.html">Iniciá sesión</a></p>
+      <p style="margin-top:10px"><a href="index.html">← Volver a la tienda</a></p>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:3000';
+
+    async function registro() {
+      const nombre = document.getElementById('nombre').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (!nombre || !email || !password) {
+        alert('Por favor completá todos los campos');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API}/api/auth/registro`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, email, password })
+        });
+
+        const data = await res.json();
+        const mensaje = document.getElementById('mensaje');
+        mensaje.style.display = 'block';
+
+        if (res.ok) {
+          mensaje.style.color = '#2ecc71';
+          mensaje.textContent = '¡Cuenta creada exitosamente! ✅';
+          setTimeout(() => window.location.href = 'login.html', 2000);
+        } else {
+          mensaje.style.color = '#e74c3c';
+          mensaje.textContent = data.message;
+        }
+      } catch (error) {
+        alert('Error al conectar con el servidor');
+      }
+    }
+  </script>
+
+</body>
+</html>
