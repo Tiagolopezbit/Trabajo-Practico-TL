@@ -11,4 +11,5 @@ urlpatterns = [
     path('carrito/', TemplateView.as_view(template_name='carrito.html')),
     path('admin-panel/', TemplateView.as_view(template_name='admin.html')),
     path('pago/', TemplateView.as_view(template_name='pago.html')),
+    path('ordenes/', TemplateView.as_view(template_name='ordenes.html')),
 ]

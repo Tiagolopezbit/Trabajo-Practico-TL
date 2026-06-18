@@ -207,11 +207,10 @@ def validar_cupon(request, codigo):
 # ── FACTURA PDF ───────────────────────────────────────────────────────────────
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def generar_factura(request, orden_id):
     try:
-        orden = Orden.objects.get(pk=orden_id, usuario=request.user)
+        orden = Orden.objects.get(pk=orden_id)
     except Orden.DoesNotExist:
         return Response({'message': 'Orden no encontrada'}, status=404)
 
@@ -232,13 +231,13 @@ def generar_factura(request, orden_id):
 
     # Datos de la orden
     p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, height - 130, f"Orden N°: {orden.id}")
+    p.drawString(50, height - 130, f"Orden N: {orden.id}")
     p.setFont("Helvetica", 12)
     p.drawString(50, height - 150, f"Cliente: {orden.usuario.first_name} {orden.usuario.username}")
     p.drawString(50, height - 170, f"Email: {orden.usuario.email}")
     p.drawString(50, height - 190, f"Fecha: {orden.creado.strftime('%d/%m/%Y %H:%M')}")
-    p.drawString(50, height - 210, f"Dirección: {orden.direccion_envio}")
-    p.drawString(50, height - 230, f"Método de pago: {orden.metodo_pago}")
+    p.drawString(50, height - 210, f"Direccion: {orden.direccion_envio}")
+    p.drawString(50, height - 230, f"Metodo de pago: {orden.metodo_pago}")
     p.drawString(50, height - 250, f"Estado: {orden.estado.upper()}")
 
     # Línea
@@ -268,7 +267,7 @@ def generar_factura(request, orden_id):
 
     # Pie de página
     p.setFont("Helvetica", 10)
-    p.drawString(50, 50, "© 2026 GOTTI Store - Todos los derechos reservados")
+    p.drawString(50, 50, "2026 GOTTI Store - Todos los derechos reservados")
 
     p.showPage()
     p.save()
