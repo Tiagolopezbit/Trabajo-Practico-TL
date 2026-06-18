@@ -26,4 +26,7 @@ urlpatterns = [
 
     # Cupones
     path('api/cupones/<str:codigo>/', views.validar_cupon),
+
+    # Factura PDF
+    path('api/facturas/<int:orden_id>/', views.generar_factura),
 ]

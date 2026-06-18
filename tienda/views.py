@@ -6,6 +6,9 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
 from .models import Producto, Carrito, ItemCarrito, Orden, ItemOrden, Resena, Cupon, Pago
 from .serializers import (ProductoSerializer, CarritoSerializer, OrdenSerializer,
                           ResenaSerializer, CuponSerializer, PagoSerializer, RegistroSerializer)
@@ -200,3 +203,74 @@ def validar_cupon(request, codigo):
         return Response({'descuento': cupon.descuento, 'tipo': cupon.tipo})
     except Cupon.DoesNotExist:
         return Response({'message': 'Cupón no válido'}, status=404)
+
+# ── FACTURA PDF ───────────────────────────────────────────────────────────────
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def generar_factura(request, orden_id):
+    try:
+        orden = Orden.objects.get(pk=orden_id, usuario=request.user)
+    except Orden.DoesNotExist:
+        return Response({'message': 'Orden no encontrada'}, status=404)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="factura-orden-{orden_id}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    # Encabezado
+    p.setFont("Helvetica-Bold", 24)
+    p.drawString(50, height - 60, "GOTTI STORE")
+    p.setFont("Helvetica", 12)
+    p.drawString(50, height - 85, "Factura de compra")
+
+    # Línea
+    p.line(50, height - 100, width - 50, height - 100)
+
+    # Datos de la orden
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, height - 130, f"Orden N°: {orden.id}")
+    p.setFont("Helvetica", 12)
+    p.drawString(50, height - 150, f"Cliente: {orden.usuario.first_name} {orden.usuario.username}")
+    p.drawString(50, height - 170, f"Email: {orden.usuario.email}")
+    p.drawString(50, height - 190, f"Fecha: {orden.creado.strftime('%d/%m/%Y %H:%M')}")
+    p.drawString(50, height - 210, f"Dirección: {orden.direccion_envio}")
+    p.drawString(50, height - 230, f"Método de pago: {orden.metodo_pago}")
+    p.drawString(50, height - 250, f"Estado: {orden.estado.upper()}")
+
+    # Línea
+    p.line(50, height - 265, width - 50, height - 265)
+
+    # Productos
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, height - 285, "PRODUCTOS:")
+    p.drawString(350, height - 285, "PRECIO")
+    p.drawString(450, height - 285, "CANT.")
+    p.drawString(510, height - 285, "SUBTOTAL")
+    p.line(50, height - 295, width - 50, height - 295)
+
+    y = height - 315
+    p.setFont("Helvetica", 11)
+    for item in orden.items.all():
+        p.drawString(50, y, item.producto.nombre[:40])
+        p.drawString(350, y, f"G. {int(item.precio):,}")
+        p.drawString(450, y, str(item.cantidad))
+        p.drawString(510, y, f"G. {int(item.subtotal()):,}")
+        y -= 25
+
+    # Total
+    p.line(50, y - 10, width - 50, y - 10)
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(350, y - 35, f"TOTAL: G. {int(orden.total):,}")
+
+    # Pie de página
+    p.setFont("Helvetica", 10)
+    p.drawString(50, 50, "© 2026 GOTTI Store - Todos los derechos reservados")
+
+    p.showPage()
+    p.save()
+
+    return response
