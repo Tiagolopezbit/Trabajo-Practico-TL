@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/productos/', include('productos.urls')),
     path('api/carrito/', include('carrito.urls')),
     path('api/ordenes/', include('ordenes.urls')),
+    path('api/facturas/', include('ordenes.urls')),
     path('api/cupones/', include('cupones.urls')),
 
     # Frontend
